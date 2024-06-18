@@ -1,0 +1,14 @@
+/******************************************************************************
+ *  @file         config.h.in
+ *  @author       Muggle Wei
+ *  @email        mugglewei@gmail.com
+ *  @date         2024-06-18
+ *  @copyright    Copyright 2024 Muggle Wei
+ *  @license      MIT License
+ *  @brief        network benchmark in config
+ *****************************************************************************/
+
+#ifndef NETWORK_BENCHMARK_CONFIG_IN_H_
+#define NETWORK_BENCHMARK_CONFIG_IN_H_
+
+#endif // !NETWORK_BENCHMARK_CONFIG_IN_H_
