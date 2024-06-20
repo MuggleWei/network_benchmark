@@ -17,6 +17,10 @@
 #include "network_benchmark/config.h"
 #include "network_benchmark/macro.h"
 #include "network_benchmark/log.h"
+#include "network_benchmark/record.h"
 #include "network_benchmark/sys_args.h"
+#include "network_benchmark/init.h"
+#include "network_benchmark/msg_struct.h"
+#include "network_benchmark/session.h"
 
 #endif // !NETWORK_BENCHMARK_NETBENCH_H_

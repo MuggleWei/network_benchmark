@@ -81,7 +81,23 @@ set(CMAKE_INSTALL_LIBDIR lib)
 ################################
 
 # option
-set(HACLOG_HOLD_LOG_MACRO ON)
+if (BUILD_SHARED_LIBS)
+	set(NET_BENCH_USE_DLL ON)
+else()
+	set(NET_BENCH_USE_DLL OFF)
+endif()
+option(BUILD_SANITIZER "Build sanitizer" OFF)
+
+message("--------------------------------")
+message("# CMAKE_C_STANDARD: ${CMAKE_C_STANDARD}")
+message("# c compiler: ${CMAKE_C_COMPILER}")
+message("# c compiler flags: ${CMAKE_C_FLAGS}")
+message("# CMAKE_SYSTEM_PROCESSOR: ${CMAKE_SYSTEM_PROCESSOR}")
+message("# CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+message("# BUILD_SHARED_LIBS: ${BUILD_SHARED_LIBS}")
+message("# NET_BENCH_USE_DLL: ${NET_BENCH_USE_DLL}")
+message("# BUILD_SANITIZER: ${BUILD_SANITIZER}")
+message("--------------------------------")
 
 # configure
 set(src_dir ${CMAKE_CURRENT_LIST_DIR}/src)

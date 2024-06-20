@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static bool log_add_console_handler(int level)
+static bool nb_log_add_console_handler(int level)
 {
 	static haclog_console_handler_t handler;
 	memset(&handler, 0, sizeof(handler));
@@ -19,7 +19,7 @@ static bool log_add_console_handler(int level)
 	return true;
 }
 
-static bool log_add_file_handle(int level, const char *filepath)
+static bool nb_log_add_file_handle(int level, const char *filepath)
 {
 	static haclog_file_handler_t handler;
 	memset(&handler, 0, sizeof(handler));
@@ -33,7 +33,7 @@ static bool log_add_file_handle(int level, const char *filepath)
 }
 
 static int s_log_bind_cpu = -1;
-static void netbench_log_bind_cpu()
+static void nb_log_bind_cpu()
 {
 	if (s_log_bind_cpu < 0) {
 		return;
@@ -53,84 +53,84 @@ static void netbench_log_bind_cpu()
 	}
 }
 
-bool netbench_log_init(int console_level, int file_level, const char *filepath,
+bool nb_log_init(int console_level, int file_level, const char *filepath,
 					   int log_bind_cpu)
 {
 	if (console_level >= 0) {
-		if (!log_add_console_handler(console_level)) {
+		if (!nb_log_add_console_handler(console_level)) {
 			fprintf(stderr, "failed add console log handler");
 			return false;
 		}
 	}
 
 	if (file_level >= 0) {
-		if (!log_add_file_handle(file_level, filepath)) {
+		if (!nb_log_add_file_handle(file_level, filepath)) {
 			fprintf(stderr, "failed add file log handler");
 			return false;
 		}
 	}
 
 	s_log_bind_cpu = log_bind_cpu;
-	haclog_context_set_before_run_cb(netbench_log_bind_cpu);
+	haclog_context_set_before_run_cb(nb_log_bind_cpu);
 
 	haclog_backend_run();
 
 	return true;
 }
 
-void netbench_log_init_thread_ctx()
+void nb_log_init_thread_ctx()
 {
 	haclog_thread_context_init();
 }
 
-void netbench_log_cleanup_thread_ctx()
+void nb_log_cleanup_thread_ctx()
 {
 	haclog_thread_context_cleanup();
 }
 
-int netbench_log_str_to_level(const char *s)
+int nb_log_str_to_level(const char *s)
 {
 	if (strcmp(s, "TRACE") == 0 || strcmp(s, "trace") == 0) {
-		return LOG_LEVEL_TRACE;
+		return NB_LOG_LEVEL_TRACE;
 	}
 	if (strcmp(s, "DEBUG") == 0 || strcmp(s, "debug") == 0) {
-		return LOG_LEVEL_DEBUG;
+		return NB_LOG_LEVEL_DEBUG;
 	}
 	if (strcmp(s, "INFO") == 0 || strcmp(s, "info") == 0) {
-		return LOG_LEVEL_INFO;
+		return NB_LOG_LEVEL_INFO;
 	}
 	if (strcmp(s, "WARNING") == 0 || strcmp(s, "warning") == 0 ||
 		strcmp(s, "WARN") == 0 || strcmp(s, "warn") == 0) {
-		return LOG_LEVEL_WARNING;
+		return NB_LOG_LEVEL_WARNING;
 	}
 	if (strcmp(s, "ERROR") == 0 || strcmp(s, "error") == 0) {
-		return LOG_LEVEL_ERROR;
+		return NB_LOG_LEVEL_ERROR;
 	}
 	if (strcmp(s, "FATAL") == 0 || strcmp(s, "fatal") == 0) {
-		return LOG_LEVEL_FATAL;
+		return NB_LOG_LEVEL_FATAL;
 	}
 	return -1;
 }
 
-const char *netbench_log_level_to_str(int level)
+const char *nb_log_level_to_str(int level)
 {
 	switch (level) {
-	case LOG_LEVEL_TRACE: {
+	case NB_LOG_LEVEL_TRACE: {
 		return "TRACE";
 	} break;
-	case LOG_LEVEL_DEBUG: {
+	case NB_LOG_LEVEL_DEBUG: {
 		return "DEBUG";
 	} break;
-	case LOG_LEVEL_INFO: {
+	case NB_LOG_LEVEL_INFO: {
 		return "INFO";
 	} break;
-	case LOG_LEVEL_WARNING: {
+	case NB_LOG_LEVEL_WARNING: {
 		return "WARNING";
 	} break;
-	case LOG_LEVEL_ERROR: {
+	case NB_LOG_LEVEL_ERROR: {
 		return "ERROR";
 	} break;
-	case LOG_LEVEL_FATAL: {
+	case NB_LOG_LEVEL_FATAL: {
 		return "FATAL";
 	} break;
 	default: {

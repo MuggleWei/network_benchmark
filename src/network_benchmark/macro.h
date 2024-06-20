@@ -13,6 +13,7 @@
 
 #include "muggle/c/base/macro.h"
 #include "network_benchmark/config.h"
+#include <assert.h>
 
 EXTERN_C_BEGIN
 
@@ -26,6 +27,11 @@ EXTERN_C_BEGIN
 #else
 	#define NET_BENCH_EXPORT
 #endif
+
+// check message struct
+#define NET_BENCH_STRICT_CHECK_MSG_STRUCT(msg)       \
+	static_assert(sizeof(msg) % sizeof(void *) == 0, \
+				  "message not align sizeof(ptr)");
 
 EXTERN_C_END
 

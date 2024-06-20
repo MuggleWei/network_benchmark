@@ -19,22 +19,22 @@ EXTERN_C_BEGIN
 #include "haclog/haclog.h"
 
 // use haclog
-#define LOG_LEVEL_TRACE HACLOG_LEVEL_TRACE
-#define LOG_LEVEL_DEBUG HACLOG_LEVEL_DEBUG
-#define LOG_LEVEL_INFO HACLOG_LEVEL_INFO
-#define LOG_LEVEL_WARNING HACLOG_LEVEL_WARNING
-#define LOG_LEVEL_ERROR HACLOG_LEVEL_ERROR
-#define LOG_LEVEL_FATAL HACLOG_LEVEL_FATAL
+#define NB_LOG_LEVEL_TRACE HACLOG_LEVEL_TRACE
+#define NB_LOG_LEVEL_DEBUG HACLOG_LEVEL_DEBUG
+#define NB_LOG_LEVEL_INFO HACLOG_LEVEL_INFO
+#define NB_LOG_LEVEL_WARNING HACLOG_LEVEL_WARNING
+#define NB_LOG_LEVEL_ERROR HACLOG_LEVEL_ERROR
+#define NB_LOG_LEVEL_FATAL HACLOG_LEVEL_FATAL
 
-#define LOG_TRACE(format, ...) HACLOG_TRACE(format, ##__VA_ARGS__)
-#define LOG_DEBUG(format, ...) HACLOG_DEBUG(format, ##__VA_ARGS__)
-#define LOG_INFO(format, ...) HACLOG_INFO(format, ##__VA_ARGS__)
-#define LOG_WARNING(format, ...) HACLOG_WARNING(format, ##__VA_ARGS__)
-#define LOG_ERROR(format, ...) HACLOG_ERROR(format, ##__VA_ARGS__)
-#define LOG_FATAL(format, ...) HACLOG_FATAL(format, ##__VA_ARGS__)
+#define NB_LOG_TRACE(format, ...) HACLOG_TRACE(format, ##__VA_ARGS__)
+#define NB_LOG_DEBUG(format, ...) HACLOG_DEBUG(format, ##__VA_ARGS__)
+#define NB_LOG_INFO(format, ...) HACLOG_INFO(format, ##__VA_ARGS__)
+#define NB_LOG_WARNING(format, ...) HACLOG_WARNING(format, ##__VA_ARGS__)
+#define NB_LOG_ERROR(format, ...) HACLOG_ERROR(format, ##__VA_ARGS__)
+#define NB_LOG_FATAL(format, ...) HACLOG_FATAL(format, ##__VA_ARGS__)
 
-#define LOG_ASSERT(x) HACLOG_ASSERT(x)
-#define LOG_ASSERT_MSG(x, format, ...) \
+#define NB_ASSERT(x) HACLOG_ASSERT(x)
+#define NB_ASSERT_MSG(x, format, ...) \
 	HACLOG_ASSERT_MSG(x, format, ##__VA_ARGS__)
 
 /**
@@ -48,20 +48,20 @@ EXTERN_C_BEGIN
  * @return boolean
  */
 NET_BENCH_EXPORT
-bool netbench_log_init(int console_level, int file_level, const char *filepath,
-					   int log_bind_cpu);
+bool nb_log_init(int console_level, int file_level, const char *filepath,
+				 int log_bind_cpu);
 
 /**
  * @brief initialize log thread context
  */
 NET_BENCH_EXPORT
-void netbench_log_init_thread_ctx();
+void nb_log_init_thread_ctx();
 
 /**
  * @brief cleanup log thread context
  */
 NET_BENCH_EXPORT
-void netbench_log_cleanup_thread_ctx();
+void nb_log_cleanup_thread_ctx();
 
 /**
  * @brief convert log string to level
@@ -71,7 +71,7 @@ void netbench_log_cleanup_thread_ctx();
  * @return log level, when error, return -1
  */
 NET_BENCH_EXPORT
-int netbench_log_str_to_level(const char *s);
+int nb_log_str_to_level(const char *s);
 
 /**
  * @brief convert log level to string
@@ -81,7 +81,7 @@ int netbench_log_str_to_level(const char *s);
  * @return string log level
  */
 NET_BENCH_EXPORT
-const char *netbench_log_level_to_str(int level);
+const char *nb_log_level_to_str(int level);
 
 EXTERN_C_END
 

@@ -12,16 +12,37 @@
 #define NETWORK_BENCHMARK_SYSTEM_ARGUMENTS_H_
 
 #include "network_benchmark/macro.h"
+#include "muggle/c/net/socket.h"
 #include <stdbool.h>
 
 EXTERN_C_BEGIN
+
+enum {
+	NETBENCH_CPU_FREQ_POWERSAVE = 0,
+	NETBENCH_CPU_FREQ_PERFORMANCE,
+};
 
 typedef struct {
 	int log_console_level;
 	int log_file_level;
 	char log_path[128];
 	int log_bind_cpu;
-} netbench_sys_args_t;
+	char record_path[128];
+	int record_bind_cpu;
+	char serv_host[MUGGLE_SOCKET_ADDR_STRLEN]; //!< server listen/bind host
+	char serv_port[16]; //!< server list/bind port
+	char conn_host[MUGGLE_SOCKET_ADDR_STRLEN]; //!< client connect to host
+	char conn_port[16]; //!< client connect to port
+	char bind_host[MUGGLE_SOCKET_ADDR_STRLEN]; //!< client bind host
+	char bind_port[16]; //!< client bind port
+	int cpu_freq;
+	int cpu_bind;
+	uint32_t user_id;
+	uint32_t round_num;
+	uint32_t num_per_round;
+	uint32_t round_interval_ms;
+	uint32_t msg_size; //!< network message size (include head and data)
+} nb_sys_args_t;
 
 /**
  * @brief parse arguments
@@ -33,10 +54,19 @@ typedef struct {
  * @return 
  */
 NET_BENCH_EXPORT
-bool netbench_parse_args(int argc, char **argv, netbench_sys_args_t *args);
+bool nb_parse_args(int argc, char **argv, nb_sys_args_t *args);
+
+/**
+ * @brief fillup empty fields
+ *
+ * @param args  arguments
+ * @param name  app name
+ */
+NET_BENCH_EXPORT
+void nb_args_fillup_empty(nb_sys_args_t *args, const char *name);
 
 NET_BENCH_EXPORT
-void netbench_args_output(netbench_sys_args_t *args);
+void nb_args_output(nb_sys_args_t *args);
 
 EXTERN_C_END
 
