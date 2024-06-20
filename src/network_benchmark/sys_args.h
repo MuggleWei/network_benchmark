@@ -13,6 +13,7 @@
 
 #include "network_benchmark/macro.h"
 #include "muggle/c/net/socket.h"
+#include <stdint.h>
 #include <stdbool.h>
 
 EXTERN_C_BEGIN

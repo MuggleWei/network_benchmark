@@ -1,9 +1,8 @@
 #include "sys_args.h"
-#include "muggle/c/base/str.h"
+#include "muggle/c/muggle_c.h"
 #include "network_benchmark/log.h"
 #include <stdlib.h>
 #include <string.h>
-#include <getopt.h>
 
 enum {
 	OPT_VAL_LOG_CONSOLE = 1000,
