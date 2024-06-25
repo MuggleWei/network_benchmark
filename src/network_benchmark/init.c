@@ -37,5 +37,8 @@ bool nb_init_components(int argc, char **argv, const char *name,
 		return false;
 	}
 
+	// print info
+	NB_LOG_INFO("muggle network benchmark: " NET_BENCH_VERSION);
+
 	return true;
 }

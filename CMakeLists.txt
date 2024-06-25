@@ -80,6 +80,19 @@ set(CMAKE_INSTALL_LIBDIR lib)
 # library
 ################################
 
+file(STRINGS "version.txt" version)
+
+string(REPLACE "-" ";" semver_ext ${version})
+list(GET semver_ext 0 semver)
+string(REPLACE "." ";" semver_list ${semver})
+
+list(GET semver_list 0 VERSION_MAJOR)
+list(GET semver_list 1 VERSION_MINOR)
+list(GET semver_list 2 VERSION_PATCH)
+
+set(NET_BENCH_VERSION "${version}")
+set(NET_BENCH_SOVERSION "${VERSION_MAJOR}")
+
 # option
 if (BUILD_SHARED_LIBS)
 	set(NET_BENCH_USE_DLL ON)

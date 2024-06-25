@@ -16,3 +16,9 @@
 ```
 <udp|tcp>_client --conn.host=${host2} --conn.port=${port2} --bind.host=${host1} --cpu.freq=${profile}
 ```
+
+## analysis
+
+```
+python network_latency_analysis.py -i <records-dir>
+```
