@@ -65,9 +65,9 @@ void tcp_upstream_handle_message(muggle_event_loop_t *evloop,
 {
 	MUGGLE_UNUSED(evloop);
 	MUGGLE_UNUSED(ctx);
-	MUGGLE_UNUSED(datalen);
 
 	NB_ASSERT(hdr->msg_id == 1);
+	uint32_t msg_size = sizeof(nb_msg_hdr_t) + datalen;
 	nb_msg_data_t *msg = (nb_msg_data_t *)data;
-	NETBENCH_RECORD(msg->user_id, msg->sequence, "upstream.rcv");
+	NETBENCH_RECORD(msg->user_id, msg->sequence, msg_size, "upstream.rcv");
 }

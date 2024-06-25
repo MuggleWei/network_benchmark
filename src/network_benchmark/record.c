@@ -63,9 +63,9 @@ static FILE *nb_record_open_file(const char *filepath)
 void nb_ts_record_callback(FILE *fp, unsigned long tid, void *data)
 {
 	nb_ts_record_t *r = (nb_ts_record_t *)data;
-	fprintf(fp, "%lu,%llu,%lu,%u,%u,%s\n", tid,
+	fprintf(fp, "%lu,%llu,%lu,%u,%u,%u,%s\n", tid,
 			(unsigned long long)r->ts.tv_sec, (unsigned long)r->ts.tv_nsec,
-			r->user_id, r->id, r->action);
+			r->user_id, r->id, r->msg_size, r->action);
 	fflush(fp);
 }
 
@@ -106,7 +106,7 @@ bool nb_record_init(const char *filepath, int capacity, int data_size,
 	}
 
 	if (need_write_head) {
-		fprintf(ctx->fp, "tid,sec,nsec,uid,id,action\n");
+		fprintf(ctx->fp, "tid,sec,nsec,uid,id,size,action\n");
 		fflush(ctx->fp);
 	}
 

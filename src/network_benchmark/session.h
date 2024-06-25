@@ -65,6 +65,47 @@ NET_BENCH_EXPORT
 muggle_socket_context_t *nb_tcp_listen(nb_sys_args_t *args);
 
 /**
+ * @brief udp bind
+ *
+ * @param args  system arguments
+ *
+ * @return   socket context
+ */
+NET_BENCH_EXPORT
+muggle_socket_context_t *nb_udp_bind(nb_sys_args_t *args);
+
+/**
+ * @brief udp connect
+ *
+ * @param args  system arguments
+ *
+ * @return   socket context
+ */
+NET_BENCH_EXPORT
+muggle_socket_context_t *nb_udp_connect(nb_sys_args_t *args);
+
+/**
+ * @brief udp bind and connect
+ *
+ * @param args  system arguments
+ *
+ * @return   socket context
+ */
+NET_BENCH_EXPORT
+muggle_socket_context_t *nb_udp_bind_connect(nb_sys_args_t *args);
+
+/**
+ * @brief detect is sockaddr equal
+ *
+ * @param sa1  sockaddr 1
+ * @param sa2  sockaddr 2
+ *
+ * @return boolean
+ */
+NET_BENCH_EXPORT
+bool nb_sockaddr_equal(const struct sockaddr *sa1, const struct sockaddr *sa2);
+
+/**
  * @brief new tcp session
  *
  * @param cb  callback

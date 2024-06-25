@@ -132,10 +132,12 @@ void tcp_server_handle_message(muggle_event_loop_t *evloop,
 		return;
 	}
 
+	uint32_t msg_size = sizeof(nb_msg_hdr_t) + datalen;
+
 	switch (session->role) {
 	case SERVER_SESSION_ROLE_CLIENT: {
 		nb_msg_data_t *msg = (nb_msg_data_t *)data;
-		NETBENCH_RECORD(msg->user_id, msg->sequence, "server.rcv");
+		NETBENCH_RECORD(msg->user_id, msg->sequence, msg_size, "server.rcv");
 
 		tcp_server_evloop_data_t *evloop_data =
 			(tcp_server_evloop_data_t *)muggle_evloop_get_data(evloop);
@@ -145,9 +147,9 @@ void tcp_server_handle_message(muggle_event_loop_t *evloop,
 			return;
 		}
 
-		NETBENCH_RECORD(msg->user_id, msg->sequence, "server.snd_begin");
-		int num_bytes = muggle_socket_ctx_write(conn_ctx, hdr,
-												datalen + sizeof(nb_msg_hdr_t));
+		NETBENCH_RECORD(msg->user_id, msg->sequence, msg_size,
+						"server.snd_begin");
+		int num_bytes = muggle_socket_ctx_write(conn_ctx, hdr, msg_size);
 		if (num_bytes != (int)(datalen + sizeof(nb_msg_hdr_t))) {
 			NB_LOG_ERROR("failed write message: seq=%u", msg->sequence);
 			muggle_socket_ctx_shutdown(conn_ctx);

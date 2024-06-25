@@ -156,6 +156,20 @@ function(add_app name folder)
 	add_dependencies(${name} netbench)
 	target_link_libraries(${name} PUBLIC netbench)
 
+	if (BUILD_SANITIZER)
+		if ((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") OR
+			(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang"))
+			target_compile_options(${name} PUBLIC
+				-fsanitize=undefined
+				-fsanitize=address
+				-fsanitize=leak)
+			target_link_options(${name} PUBLIC
+				-fsanitize=undefined
+				-fsanitize=address
+				-fsanitize=leak)
+		endif()
+	endif()
+
 	install(TARGETS ${name}
 		RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
 		ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"

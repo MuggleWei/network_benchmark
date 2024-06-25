@@ -73,7 +73,7 @@ bool nb_parse_args(int argc, char **argv, nb_sys_args_t *args)
 	args->round_num = 1000;
 	args->num_per_round = 1;
 	args->round_interval_ms = 1;
-	args->msg_size = 16;
+	args->msg_size = 0;
 
 	static struct option long_options[] = {
 		{ "help", no_argument, NULL, 'h' },

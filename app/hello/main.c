@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
 		timespec_get(&r->ts, TIME_UTC);
 		r->user_id = 0;
 		r->id = i;
+		r->msg_size = 0;
 		r->action = "test";
 		nb_record_commit();
 	}

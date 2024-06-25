@@ -75,6 +75,9 @@ void tcp_client_on_timer(muggle_event_loop_t *evloop)
 		(tcp_client_evloop_data_t *)muggle_evloop_get_data(evloop);
 
 	if (evloop_data->round_index >= evloop_data->args->round_num) {
+		NB_LOG_INFO("task[msg_size=%u] completed, exit evloop",
+					evloop_data->args->msg_size);
+		muggle_evloop_exit(evloop);
 		return;
 	}
 
@@ -95,19 +98,23 @@ void tcp_client_on_timer(muggle_event_loop_t *evloop)
 
 	NB_LOG_DEBUG("round[%u] start", evloop_data->round_index);
 
-	char *p = evloop_data->datas;
 	uint32_t n = evloop_data->args->num_per_round;
 	uint32_t msg_size = evloop_data->args->msg_size;
 	uint32_t seq = evloop_data->round_index * n;
 	uint32_t user_id = evloop_data->args->user_id;
+	char *p =
+		(char *)evloop_data->datas + evloop_data->round_index * n * msg_size;
 
 	for (uint32_t i = 0; i < n; ++i) {
-		nb_msg_data_t *data = (nb_msg_data_t *)(p + sizeof(nb_msg_hdr_t));
+		nb_msg_hdr_t *hdr = (nb_msg_hdr_t *)p;
+		nb_msg_data_t *data = (nb_msg_data_t *)(hdr + 1);
+		NB_ASSERT(hdr->msg_id == 1);
+		NB_ASSERT(data->sequence == seq);
 		data->sequence = seq++;
 
-		NETBENCH_RECORD(user_id, data->sequence, "client.snd_begin");
+		NETBENCH_RECORD(user_id, data->sequence, msg_size, "client.snd_begin");
 		int num_bytes = muggle_socket_ctx_write(evloop_data->ctx, p, msg_size);
-		NETBENCH_RECORD(user_id, data->sequence, "client.snd_end");
+		NETBENCH_RECORD(user_id, data->sequence, msg_size, "client.snd_end");
 
 		if (num_bytes != (int)msg_size) {
 			NB_LOG_ERROR("failed write message: seq=%u", data->sequence);

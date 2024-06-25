@@ -5,6 +5,7 @@
 #include "muggle/c/net/socket_utils.h"
 #include "network_benchmark/log.h"
 #include <stdlib.h>
+#include <string.h>
 
 muggle_socket_context_t *nb_tcp_connect(nb_sys_args_t *args)
 {
@@ -90,6 +91,113 @@ muggle_socket_context_t *nb_tcp_listen(nb_sys_args_t *args)
 	muggle_socket_ctx_init(ctx, fd, NULL, MUGGLE_SOCKET_CTX_TYPE_TCP_LISTEN);
 
 	return ctx;
+}
+
+muggle_socket_context_t *nb_udp_bind(nb_sys_args_t *args)
+{
+	muggle_socket_t fd = MUGGLE_INVALID_SOCKET;
+	do {
+		fd = muggle_udp_bind(args->serv_host, args->serv_port);
+		if (fd == MUGGLE_INVALID_SOCKET) {
+			NB_LOG_ERROR("failed UDP bind: host=%s, port=%s", args->serv_host,
+						 args->serv_port);
+			muggle_msleep(3000);
+		}
+	} while (fd == MUGGLE_INVALID_SOCKET);
+
+	NB_LOG_INFO("success UDP bind: host=%s, port=%s", args->serv_host,
+				args->serv_port);
+
+	muggle_socket_context_t *ctx =
+		(muggle_socket_context_t *)malloc(sizeof(muggle_socket_context_t));
+	muggle_socket_ctx_init(ctx, fd, NULL, MUGGLE_SOCKET_CTX_TYPE_UDP);
+
+	return ctx;
+}
+
+muggle_socket_context_t *nb_udp_connect(nb_sys_args_t *args)
+{
+	muggle_socket_t fd = MUGGLE_INVALID_SOCKET;
+	do {
+		fd = muggle_udp_connect(args->conn_host, args->conn_port);
+		if (fd == MUGGLE_INVALID_SOCKET) {
+			NB_LOG_ERROR("failed UDP connect: host=%s, port=%s",
+						 args->conn_host, args->conn_port);
+			muggle_msleep(3000);
+		}
+	} while (fd == MUGGLE_INVALID_SOCKET);
+
+	NB_LOG_INFO("success UDP connect: host=%s, port=%s", args->conn_host,
+				args->conn_port);
+
+	muggle_socket_context_t *ctx =
+		(muggle_socket_context_t *)malloc(sizeof(muggle_socket_context_t));
+	muggle_socket_ctx_init(ctx, fd, NULL, MUGGLE_SOCKET_CTX_TYPE_UDP);
+
+	return ctx;
+}
+
+muggle_socket_context_t *nb_udp_bind_connect(nb_sys_args_t *args)
+{
+	muggle_socket_context_t *ctx = nb_udp_bind(args);
+
+	struct addrinfo addr_info;
+	struct sockaddr_storage sa;
+
+	struct addrinfo hints;
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_DGRAM;
+	if (muggle_socket_getaddrinfo(args->conn_host, args->conn_port, &hints,
+								  &addr_info, (struct sockaddr *)&sa) != 0) {
+		NB_LOG_ERROR("failed get addrinfo: host=%s, port=%s", args->conn_host,
+					 args->conn_port);
+		muggle_socket_ctx_close(ctx);
+		free(ctx);
+		return NULL;
+	}
+
+	if (connect(muggle_socket_ctx_get_fd(ctx), (struct sockaddr *)&sa,
+				addr_info.ai_addrlen) != 0) {
+		NB_LOG_ERROR("failed udp connect: host=%s, port=%s", args->conn_host,
+					 args->conn_port);
+		muggle_socket_ctx_close(ctx);
+		free(ctx);
+		return NULL;
+	}
+
+	return ctx;
+}
+
+bool nb_sockaddr_equal(const struct sockaddr *sa1, const struct sockaddr *sa2)
+{
+	bool ret = true;
+
+	if (sa1->sa_family != sa2->sa_family) {
+		return false;
+	}
+
+	switch (sa1->sa_family) {
+	case AF_INET: {
+		struct sockaddr_in *sin1 = (struct sockaddr_in *)sa1;
+		struct sockaddr_in *sin2 = (struct sockaddr_in *)sa2;
+		ret = (sin1->sin_port == sin2->sin_port) &&
+			  (memcmp(&sin1->sin_addr, &sin2->sin_addr,
+					  sizeof(sin1->sin_addr)) == 0);
+	} break;
+	case AF_INET6: {
+		struct sockaddr_in6 *sin6_1 = (struct sockaddr_in6 *)sa1;
+		struct sockaddr_in6 *sin6_2 = (struct sockaddr_in6 *)sa2;
+		ret = (sin6_1->sin6_port == sin6_2->sin6_port) &&
+			  (memcmp(&sin6_1->sin6_addr, &sin6_2->sin6_addr,
+					  sizeof(sin6_1->sin6_addr)) == 0);
+	} break;
+	default: {
+		ret = false;
+	} break;
+	}
+
+	return ret;
 }
 
 nb_tcp_session_t *nb_tcp_session_new(fn_nb_msg_callback cb)

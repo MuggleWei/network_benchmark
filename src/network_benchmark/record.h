@@ -25,15 +25,17 @@ typedef struct {
 	struct timespec ts;
 	uint32_t user_id;
 	uint32_t id;
+	uint32_t msg_size;
 	const char *action;
 } nb_ts_record_t;
 
-#define NETBENCH_RECORD(uid, seq, str_action)                      \
+#define NETBENCH_RECORD(uid, seq, msgsize, str_action)             \
 	{                                                              \
 		nb_ts_record_t *r = (nb_ts_record_t *)nb_record_prepare(); \
 		timespec_get(&r->ts, TIME_UTC);                            \
 		r->user_id = uid;                                          \
 		r->id = seq;                                               \
+		r->msg_size = msgsize;                                     \
 		r->action = str_action;                                    \
 		nb_record_commit();                                        \
 	}
