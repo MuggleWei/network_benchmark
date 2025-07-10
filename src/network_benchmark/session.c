@@ -240,7 +240,7 @@ void nb_tcp_session_on_msg(muggle_event_loop_t *evloop,
 
 		int n = muggle_socket_ctx_read(ctx, p, NET_BENCH_TCP_RECV_UNIT_SIZE);
 		if (n > 0) {
-			if (!muggle_bytes_buffer_writer_move(bytes_buf, n)) {
+			if (!muggle_bytes_buffer_writer_move_n(bytes_buf, p, n)) {
 				NB_ASSERT(0);
 				NB_LOG_FATAL("bytes buffer inner error!");
 				muggle_socket_ctx_shutdown(ctx);

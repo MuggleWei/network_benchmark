@@ -56,7 +56,7 @@ message("# fetch mugglec")
 FetchContent_Declare(
 	mugglec
 	GIT_REPOSITORY https://github.com/MuggleWei/mugglec.git
-	GIT_TAG v1.8.1
+	GIT_TAG v2.1.1
 	GIT_SHALLOW TRUE
 	)
 FetchContent_MakeAvailable(mugglec)
@@ -65,7 +65,7 @@ message("# fetch haclog")
 FetchContent_Declare(
 	haclog
 	GIT_REPOSITORY https://github.com/MuggleWei/haclog.git
-	GIT_TAG v0.2.0
+	GIT_TAG v0.4.3
 	GIT_SHALLOW TRUE
 	)
 FetchContent_MakeAvailable(haclog)
