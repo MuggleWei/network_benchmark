@@ -246,9 +246,7 @@ void nb_tcp_session_on_msg(muggle_event_loop_t *evloop,
 				muggle_socket_ctx_shutdown(ctx);
 				return;
 			}
-		}
-
-		if (n < NET_BENCH_TCP_RECV_UNIT_SIZE) {
+		} else {
 			break;
 		}
 	}

@@ -56,7 +56,7 @@ message("# fetch mugglec")
 FetchContent_Declare(
 	mugglec
 	GIT_REPOSITORY https://github.com/MuggleWei/mugglec.git
-	GIT_TAG v2.1.1
+	GIT_TAG v2.2.1
 	GIT_SHALLOW TRUE
 	)
 FetchContent_MakeAvailable(mugglec)
