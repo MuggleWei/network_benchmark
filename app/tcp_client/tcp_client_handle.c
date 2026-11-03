@@ -26,6 +26,9 @@ void tcp_client_on_add_ctx(muggle_event_loop_t *evloop,
 	tcp_client_evloop_data_t *evloop_data =
 		(tcp_client_evloop_data_t *)muggle_evloop_get_data(evloop);
 	evloop_data->ctx = ctx;
+
+	muggle_realtime_get(evloop_data->last_ts);
+	evloop_data->last_ts.tv_sec += evloop_data->args->cli_wait;
 }
 void tcp_client_on_close(muggle_event_loop_t *evloop,
 						 muggle_socket_context_t *ctx)
@@ -88,9 +91,9 @@ void tcp_client_on_timer(muggle_event_loop_t *evloop)
 	struct timespec ts;
 	muggle_realtime_get(ts);
 	struct timespec *last_ts = &evloop_data->last_ts;
-	uint32_t elapsed_ms = (ts.tv_sec - last_ts->tv_sec) * 1000 +
-						  ts.tv_nsec / 1000000 - last_ts->tv_nsec / 1000000;
-	if (elapsed_ms < evloop_data->args->round_interval_ms) {
+	int64_t elapsed_ms = (ts.tv_sec - last_ts->tv_sec) * 1000ll +
+						 ts.tv_nsec / 1000000ll - last_ts->tv_nsec / 1000000ll;
+	if (elapsed_ms < (int64_t)evloop_data->args->round_interval_ms) {
 		return;
 	}
 	evloop_data->last_ts.tv_sec = ts.tv_sec;

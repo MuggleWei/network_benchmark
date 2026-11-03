@@ -43,6 +43,7 @@ typedef struct {
 	uint32_t num_per_round;
 	uint32_t round_interval_ms;
 	uint32_t msg_size; //!< network message size (include head and data)
+	uint32_t cli_wait;
 } nb_sys_args_t;
 
 /**

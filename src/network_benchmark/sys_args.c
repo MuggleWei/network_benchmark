@@ -24,6 +24,7 @@ enum {
 	OPT_VAL_NUM_PER_ROUND,
 	OPT_VAL_ROUND_INTERVAL,
 	OPT_VAL_MSG_SIZE,
+	OPT_VAL_CLI_WAIT,
 };
 
 bool nb_parse_args(int argc, char **argv, nb_sys_args_t *args)
@@ -52,6 +53,7 @@ bool nb_parse_args(int argc, char **argv, nb_sys_args_t *args)
 		"      , --round.num_per   number order per round\n"
 		"      , --round.interval  interval between round (ms)\n"
 		"      , --msg.size        network message size (include custom head & data)\n"
+		"      , --cli.wait        after connect, wait how many seconds before send\n"
 		"";
 
 	memset(args, 0, sizeof(*args));
@@ -74,6 +76,7 @@ bool nb_parse_args(int argc, char **argv, nb_sys_args_t *args)
 	args->num_per_round = 1;
 	args->round_interval_ms = 1;
 	args->msg_size = 0;
+	args->cli_wait = 0;
 
 	static struct option long_options[] = {
 		{ "help", no_argument, NULL, 'h' },
@@ -96,6 +99,7 @@ bool nb_parse_args(int argc, char **argv, nb_sys_args_t *args)
 		{ "round.num_per", required_argument, NULL, OPT_VAL_NUM_PER_ROUND },
 		{ "round.interval", required_argument, NULL, OPT_VAL_ROUND_INTERVAL },
 		{ "msg.size", required_argument, NULL, OPT_VAL_MSG_SIZE },
+		{ "cli.wait", required_argument, NULL, OPT_VAL_CLI_WAIT },
 	};
 
 	while (1) {
@@ -185,6 +189,9 @@ bool nb_parse_args(int argc, char **argv, nb_sys_args_t *args)
 		case OPT_VAL_MSG_SIZE: {
 			muggle_str_tou(optarg, &args->msg_size, 10);
 		} break;
+		case OPT_VAL_CLI_WAIT: {
+			muggle_str_tou(optarg, &args->cli_wait, 10);
+		} break;
 		}
 	}
 
@@ -233,6 +240,7 @@ void nb_args_output(nb_sys_args_t *args)
 			"round.num_per: %u\n"
 			"round.interval: %u (ms)\n"
 			"msg.size: %u\n"
+			"cli.wait: %u (s)\n"
 			"----------------------------\n",
 			nb_log_level_to_str(args->log_console_level),
 			nb_log_level_to_str(args->log_file_level), args->log_path,
@@ -242,5 +250,5 @@ void nb_args_output(nb_sys_args_t *args)
 			args->cpu_freq == NETBENCH_CPU_FREQ_POWERSAVE ? "powersave" :
 															"performance",
 			args->cpu_bind, args->user_id, args->round_num, args->num_per_round,
-			args->round_interval_ms, args->msg_size);
+			args->round_interval_ms, args->msg_size, args->cli_wait);
 }

@@ -11,6 +11,7 @@
 #ifndef NETWORK_BENCHMARK_SESSION_H_
 #define NETWORK_BENCHMARK_SESSION_H_
 
+#include "muggle/c/memory/memory_resource.h"
 #include "network_benchmark/macro.h"
 #include "muggle/c/event/event_loop.h"
 #include "muggle/c/net/socket_context.h"
@@ -30,6 +31,7 @@ typedef void (*fn_nb_msg_callback)(muggle_event_loop_t *evloop,
 
 typedef struct {
 	fn_nb_msg_callback cb;
+	muggle_memory_resource_t mem_res;
 	muggle_bytes_buffer_t bytes_buf;
 	uint32_t msg_len_limit; //!< limit of message length, 0 represent no limit
 	uint32_t role;

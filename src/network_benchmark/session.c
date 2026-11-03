@@ -205,7 +205,29 @@ nb_tcp_session_t *nb_tcp_session_new(fn_nb_msg_callback cb)
 	nb_tcp_session_t *session =
 		(nb_tcp_session_t *)malloc(sizeof(nb_tcp_session_t));
 	session->cb = cb;
-	muggle_bytes_buffer_init(&session->bytes_buf, NET_BENCH_TCP_BUF_SIZE);
+
+	muggle_memory_res_flags_t flags;
+	memset(&flags, 0, sizeof(flags));
+	flags.mem_type = MUGGLE_MEMORY_RES_TYPE_HUGE_PRIVATE;
+	flags.huge_type = MUGGLE_MEMORY_RES_HUGE_DEFAULT;
+	flags.populate_type = MUGGLE_MEMORY_RES_POPULATE_WRITE;
+
+	if (muggle_memory_res_init(&session->mem_res, NET_BENCH_TCP_BUF_SIZE,
+							   flags.val, NULL, 0)) {
+		muggle_bytes_buffer_t *bytes_buf = &session->bytes_buf;
+		memset(bytes_buf, 0, sizeof(*bytes_buf));
+		bytes_buf->buffer = session->mem_res.data;
+		bytes_buf->c = NET_BENCH_TCP_BUF_SIZE;
+		bytes_buf->t = NET_BENCH_TCP_BUF_SIZE;
+	} else {
+		memset(&session->mem_res, 0, sizeof(muggle_memory_resource_t));
+		NB_LOG_WARNING("failed init memory resource with huge page, "
+					   "use memory from malloc");
+
+		// use memory without huge page
+		muggle_bytes_buffer_init(&session->bytes_buf, NET_BENCH_TCP_BUF_SIZE);
+	}
+
 	session->msg_len_limit = 0;
 
 	return session;
@@ -213,7 +235,11 @@ nb_tcp_session_t *nb_tcp_session_new(fn_nb_msg_callback cb)
 
 void nb_tcp_session_delete(nb_tcp_session_t *session)
 {
-	muggle_bytes_buffer_destroy(&session->bytes_buf);
+	if (session->mem_res.data) {
+		muggle_memory_res_destroy(&session->mem_res);
+	} else {
+		muggle_bytes_buffer_destroy(&session->bytes_buf);
+	}
 	free(session);
 }
 
