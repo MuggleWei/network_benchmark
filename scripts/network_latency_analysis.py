@@ -53,6 +53,13 @@ if __name__ == "__main__":
                 v["file"] = LatencyHandle.open_file(os.path.join(output, filename))
 
             latency_list = LatencyHandle.cal_latency(record_data_dict, v["range"][0], v["range"][1])
+
+            records_filename = "records_{}_{}".format(msg_size, filename)
+            records_filepath = os.path.join(output, records_filename)
+            with open(records_filepath, "w") as f:
+                for elapsed in latency_list:
+                    f.write("{}\n".format(elapsed))
+
             LatencyHandle.dump_statistics_result(v["file"], msg_size, latency_list)
 
     for v in target.values():
